@@ -1,0 +1,8 @@
+/include
+/lib
+/mac/move.y/DerivedData
+/vs/move.y/.vs
+*.ilk
+*.pdb
+*.res
+*.mp4
