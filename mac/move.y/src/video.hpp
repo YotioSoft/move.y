@@ -22,7 +22,7 @@ public:
 	int addLayer();
 	
 	// レイヤーのポインタを返す
-	//Array<Layer*> getLayers();
+	Array<Layer*> getLayers();
 	
 	// オブジェクトをレイヤー追加する
 	bool addObjectToLayer(int argLayerNum, Object& argObject);

@@ -13,6 +13,6 @@
 
 void imageToMat(cv::Mat& argMat, Image& argImage);
 
-void addObjectToMat(cv::Mat& argTo, Object& argFrom);
+void addObjectToMat(cv::Mat& argTo, Object& argFrom, int argFrameNum);
 
 #endif /* converter_hpp */

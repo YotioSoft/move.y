@@ -9,6 +9,7 @@
 #define object_hpp
 
 #include "header.h"
+#include "rpn.hpp"
 
 class Object {
 public:
@@ -17,11 +18,15 @@ public:
 	void setRect(Rect& argRect, Color argColor, int argStartFrameNum, int argEndFrameNum);
 	void setCircle(Circle &argCircle, Color argColor, int argStartFrameNum, int argEndFrameNum);
 	
+	// 数式のセット
+	void setMoveX(String argFormula);		// オブジェクトの移動(x座標)
+	void setMoveY(String argFormula);		// オブジェクトの移動(y座標)
+	
 	// オブジェクトのフレーム時間を取得
 	pair<int, int> getFrameTime();
 	
 	// オブジェクトの位置を取得
-	Position getPos();
+	Position getPos(int argFrameNum);
 	
 	// オブジェクトのサイズを取得
 	Size getSize();
@@ -65,6 +70,10 @@ private:
 	StringObject* string;	// 文字列
 	Rect* rect;				// 四角形
 	Circle* circle;			// 円形
+	
+	// 数式
+	pair<bool, ReversePolishNotation> moveRPNx;	// オブジェクト移動用(x座標)
+	pair<bool, ReversePolishNotation> moveRPNy;	// オブジェクト移動用(y座標)
 };
 
 #endif /* object_hpp */

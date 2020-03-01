@@ -50,9 +50,9 @@ public:
 	
 	String toString();
 	
-	stack<RPNnode> simplification();
-	
-	double calc(Array<RPNvar> vars);
+	double calc(String argVarName, double argFigure);
+	double calc(Array<RPNnode*> argRPN);
+	double calc();
 	
 private:
 	RPNnode* node;

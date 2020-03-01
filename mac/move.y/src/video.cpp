@@ -25,11 +25,9 @@ int Video::addLayer() {
 	return (int)layers.size();
 }
 
-/*
 Array<Layer*> Video::getLayers() {
 	return layers;
 }
- */
 
 bool Video::addObjectToLayer(int argLayerNum, Object& argObject) {
 	if (argLayerNum > layers.size()) {
@@ -65,7 +63,7 @@ Size Video::preview(int argFrameNum) {
 				continue;
 			}
 			
-			tempObject->getTexture()->draw(tempObject->getPos().x, tempObject->getPos().y);
+			tempObject->getTexture()->draw(tempObject->getPos(argFrameNum).x, tempObject->getPos(argFrameNum).y);
 		}
 		
 		needToUpdatePreview = false;
@@ -73,7 +71,7 @@ Size Video::preview(int argFrameNum) {
 	
 	// プレビュー部分の用意
 	if (videoSize.x >= videoSize.y) {
-		previewSize = {(int)(windowSize.x*0.97), (int)(videoSize.y/(double)videoSize.x*windowSize.x*0.97)};
+		previewSize = {(int)(windowSize.x*0.75), (int)(videoSize.y/(double)videoSize.x*windowSize.x*0.75)};
 	}
 	else {
 		previewSize = {(int)(videoSize.x/(double)videoSize.x*windowSize.x*0.42), (int)(windowSize.y*0.42)};
@@ -112,7 +110,7 @@ void Video::encode(String argVideoFilePath) {
 				continue;
 			}
 				
-			tempObject->getTexture()->draw(tempObject->getPos().x, tempObject->getPos().y);
+			tempObject->getTexture()->draw(tempObject->getPos(f).x, tempObject->getPos(f).y);
 		}
 		
 		Graphics2D::Flush();

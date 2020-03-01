@@ -17,8 +17,8 @@ void imageToMat(cv::Mat& argMat, Image& argImage) {
 	}
 }
 
-void addObjectToMat(cv::Mat& argTo, Object& argFrom) {
-	Position objectImagePos = argFrom.getPos();
+void addObjectToMat(cv::Mat& argTo, Object& argFrom, int argFrameNum) {
+	Position objectImagePos = argFrom.getPos(argFrameNum);
 	Size objectImageSize = argFrom.getSize();
 	
 	for (int y=0; y<objectImageSize.y; y++) {

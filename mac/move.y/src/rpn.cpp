@@ -50,6 +50,7 @@ bool ReversePolishNotation::set(String argFormula) {
 			else {
 				vars << argFormula.substr(i, 1);
 				nodeTempP->type = symbols::var;
+				nodeTempP->var = argFormula.substr(i, 1);
 				
 				/*
 				free(nodeTempP);
@@ -227,7 +228,27 @@ String ReversePolishNotation::toString() {
 	return rpnStr;
 }
 
-stack<RPNnode> ReversePolishNotation::simplification() {
+double ReversePolishNotation::calc(String argVarName, double argFigure) {
+	Array<RPNnode*> newRPN;
+	
+	// 変数を数値に置き換えて計算する
+	for (int i=0; i<rpn.size(); i++) {
+		if (rpn[i]->type == symbols::var && rpn[i]->var == argVarName) {
+			RPNnode newNode;
+			newNode.figure = argFigure;
+			newNode.type = symbols::figure;
+				
+			newRPN.push_back(&newNode);
+		}
+		else {
+			newRPN.push_back(rpn[i]);
+		}
+	}
+	
+	return calc(newRPN);
+}
+
+double ReversePolishNotation::calc(Array<RPNnode*> argRPN) {
 	stack<RPNnode> calculatingStack;
 	double tempA;
 	double tempB;
@@ -236,23 +257,14 @@ stack<RPNnode> ReversePolishNotation::simplification() {
 		switch (rpn[i]->type) {
 			case symbols::figure:
 			case symbols::var:
-				calculatingStack.push(*rpn[i]);
+				calculatingStack.push(*argRPN[i]);
 				break;
 				
 			case symbols::addition:
 				if (calculatingStack.size() >= 2) {
 					tempA = calculatingStack.top().figure;
-					if (calculatingStack.top().type == symbols::var) {
-						break;
-					}
 					calculatingStack.pop();
-					RPNnode copyTempAnode = calculatingStack.top();
-					
 					tempB = calculatingStack.top().figure;
-					if (calculatingStack.top().type == symbols::var) {
-						calculatingStack.push(copyTempAnode);			// 変数だった場合は元に戻す
-						break;
-					}
 					calculatingStack.pop();
 					
 					RPNnode newNode;
@@ -265,17 +277,8 @@ stack<RPNnode> ReversePolishNotation::simplification() {
 			case symbols::subtraction:
 				if (calculatingStack.size() >= 2) {
 					tempA = calculatingStack.top().figure;
-					if (calculatingStack.top().type == symbols::var) {
-						break;
-					}
 					calculatingStack.pop();
-					RPNnode copyTempAnode = calculatingStack.top();
-					
 					tempB = calculatingStack.top().figure;
-					if (calculatingStack.top().type == symbols::var) {
-						calculatingStack.push(copyTempAnode);			// 変数だった場合は元に戻す
-						break;
-					}
 					calculatingStack.pop();
 					
 					RPNnode newNode;
@@ -288,17 +291,8 @@ stack<RPNnode> ReversePolishNotation::simplification() {
 			case symbols::multiplication:
 				if (calculatingStack.size() >= 2) {
 					tempA = calculatingStack.top().figure;
-					if (calculatingStack.top().type == symbols::var) {
-						break;
-					}
 					calculatingStack.pop();
-					RPNnode copyTempAnode = calculatingStack.top();
-					
 					tempB = calculatingStack.top().figure;
-					if (calculatingStack.top().type == symbols::var) {
-						calculatingStack.push(copyTempAnode);			// 変数だった場合は元に戻す
-						break;
-					}
 					calculatingStack.pop();
 					
 					RPNnode newNode;
@@ -311,17 +305,8 @@ stack<RPNnode> ReversePolishNotation::simplification() {
 			case symbols::division:
 				if (calculatingStack.size() >= 2) {
 					tempA = calculatingStack.top().figure;
-					if (calculatingStack.top().type == symbols::var) {
-						break;
-					}
 					calculatingStack.pop();
-					RPNnode copyTempAnode = calculatingStack.top();
-					
 					tempB = calculatingStack.top().figure;
-					if (calculatingStack.top().type == symbols::var) {
-						calculatingStack.push(copyTempAnode);			// 変数だった場合は元に戻す
-						break;
-					}
 					calculatingStack.pop();
 					
 					RPNnode newNode;
@@ -333,15 +318,9 @@ stack<RPNnode> ReversePolishNotation::simplification() {
 		}
 	}
 	
-	return calculatingStack;
+	return calculatingStack.top().figure;
 }
 
-double ReversePolishNotation::calc(Array<RPNvar> vars) {
-	double result;
-	
-	stack<RPNnode> simply = simplification();
-	
-	
-	
-	return result;
+double ReversePolishNotation::calc() {
+	return calc(rpn);
 }

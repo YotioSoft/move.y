@@ -65,12 +65,32 @@ void Object::setCircle(Circle &argCircle, Color argColor, int argStartFrameNum, 
 	objectType = object_type::circle;
 }
 
+void Object::setMoveX(String argFormula) {
+	moveRPNx.first = true;
+	moveRPNx.second.set(argFormula);
+}
+
+
+void Object::setMoveY(String argFormula) {
+	moveRPNy.first = true;
+	moveRPNy.second.set(argFormula);
+}
+
 pair<int, int> Object::getFrameTime() {
 	return pair<int, int>{objectBeginFrameNum, objectEndFrameNum};
 }
 
-Position Object::getPos() {
-	return objectPos;
+Position Object::getPos(int argFrameNum) {
+	Position returnPos = objectPos;
+	
+	if (moveRPNx.first) {
+		returnPos.x += moveRPNx.second.calc(U"t", argFrameNum-objectBeginFrameNum);
+	}
+	if (moveRPNy.first) {
+		returnPos.y += moveRPNy.second.calc(U"t", argFrameNum-objectBeginFrameNum);
+	}
+	
+	return returnPos;
 }
 
 Size Object::getSize() {
