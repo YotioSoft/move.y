@@ -27,6 +27,12 @@ public:
 	// オブジェクトをレイヤー追加する
 	bool addObjectToLayer(int argLayerNum, Object& argObject);
 	
+	// カーソルがオブジェクトの上にあることを検知
+	int cursorOnObject(int argFrameNum);
+	
+	// マウス座標をプレビュー上の座標に変換
+	Vec2 cursorPosOnPreviewer();
+	
 	// プレビュー部分の表示
 	Size preview(int argFrameNum);
 	
@@ -76,6 +82,9 @@ private:
 	
 	// 書き出し済みのフレーム数
 	int wroteFrames;
+	
+	// カーソルの下にあるオブジェクトのレイヤー番号
+	int layerUnderCursor;
 };
 
 #endif /* video_hpp */

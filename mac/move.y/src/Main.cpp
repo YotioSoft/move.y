@@ -9,7 +9,7 @@ void Main() {
 	Window::Maximize();
 	Window::Resize(Window::ClientSize());
 	Scene::SetScaleMode(ScaleMode::ResizeFill);
-    Scene::SetBackground(Color(Palette::Snow));
+    Scene::SetBackground(Color(75, 75, 75));
 	
 	Size videoSize = Size(1920, 1080);
 	Video video(videoSize, Scene::Size());

@@ -29,7 +29,7 @@ public:
 	Position getPos(int argFrameNum);
 	
 	// オブジェクトのサイズを取得
-	Size getSize();
+	Size getSize(int argFrameNum);
 	
 	// イメージの取得
 	const Image& getImage();

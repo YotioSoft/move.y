@@ -93,7 +93,7 @@ Position Object::getPos(int argFrameNum) {
 	return returnPos;
 }
 
-Size Object::getSize() {
+Size Object::getSize(int argFrameNum) {
 	return objectSize;
 }
 

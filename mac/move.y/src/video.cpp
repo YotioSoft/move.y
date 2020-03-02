@@ -44,10 +44,50 @@ bool Video::addObjectToLayer(int argLayerNum, Object& argObject) {
 	return ret;
 }
 
+int Video::cursorOnObject(int argFrameNum) {
+	int clickedLayerNumber = -1;
+	Vec2 cursorPosOnRenderTexture = cursorPosOnPreviewer();
+	
+	for (int i=0; i<layers.size(); i++) {
+		if (layers[i]->getObject(argFrameNum) == nullptr) {
+			continue;
+		}
+		
+		Position objectPos = layers[i]->getObject(argFrameNum)->getPos(argFrameNum);
+		Size objectSize = layers[i]->getObject(argFrameNum)->getSize(argFrameNum);
+		
+		if (objectPos.x <= cursorPosOnRenderTexture.x &&
+			objectPos.y <= cursorPosOnRenderTexture.y &&
+			objectPos.x+objectSize.x >= cursorPosOnRenderTexture.x &&
+			objectPos.y+objectSize.y >= cursorPosOnRenderTexture.y) {
+			
+			clickedLayerNumber = i;
+		}
+	}
+	
+	return clickedLayerNumber;
+}
+
+Vec2 Video::cursorPosOnPreviewer() {
+	// マウス座標をRenderTexture上の座標に変換
+	Vec2 cursorPosOnRenderTexture = {
+		(int)((Cursor::Pos().x-10)/(windowSize.x*0.75)*videoSize.x),
+		(int)((Cursor::Pos().y-10)/(videoSize.y/(double)videoSize.x*windowSize.x*0.75)*videoSize.y)
+	};
+	
+	return cursorPosOnRenderTexture;
+}
+
 Size Video::preview(int argFrameNum) {
 	if (argFrameNum != previewingFrameNum) {
 		needToUpdatePreview = true;
 		previewingFrameNum = argFrameNum;
+	}
+	
+	int coo = cursorOnObject(argFrameNum);
+	if (coo != layerUnderCursor) {
+		needToUpdatePreview = true;
+		layerUnderCursor = coo;
 	}
 	
 	// プレビューの更新
@@ -64,6 +104,11 @@ Size Video::preview(int argFrameNum) {
 			}
 			
 			tempObject->getTexture()->draw(tempObject->getPos(argFrameNum).x, tempObject->getPos(argFrameNum).y);
+			
+			if (layerUnderCursor == i) {
+				Rect(tempObject->getPos(argFrameNum).x-2, tempObject->getPos(argFrameNum).y-2,
+					 tempObject->getSize(argFrameNum).x+4, tempObject->getSize(argFrameNum).y+4).draw(Color(0, 162, 232, 128));
+			}
 		}
 		
 		needToUpdatePreview = false;

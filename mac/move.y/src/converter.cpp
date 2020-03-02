@@ -19,7 +19,7 @@ void imageToMat(cv::Mat& argMat, Image& argImage) {
 
 void addObjectToMat(cv::Mat& argTo, Object& argFrom, int argFrameNum) {
 	Position objectImagePos = argFrom.getPos(argFrameNum);
-	Size objectImageSize = argFrom.getSize();
+	Size objectImageSize = argFrom.getSize(argFrameNum);
 	
 	for (int y=0; y<objectImageSize.y; y++) {
 		cv::Vec3b* linePixelsPtr = argTo.ptr<cv::Vec3b>(objectImagePos.y+y);
