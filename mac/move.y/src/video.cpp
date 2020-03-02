@@ -7,10 +7,8 @@
 
 #include "video.hpp"
 
-Video::Video(Size argVideoSize, Size argWindowSize) {
+Video::Video(Size argVideoSize) {
 	videoSize = argVideoSize;
-	
-	windowSize = argWindowSize;
 	
 	previewTexture = MSRenderTexture(videoSize.x, videoSize.y, Color(Palette::Black));
 	encordingTexture = MSRenderTexture(videoSize.x, videoSize.y, Color(Palette::Black));
@@ -44,9 +42,9 @@ bool Video::addObjectToLayer(int argLayerNum, Object& argObject) {
 	return ret;
 }
 
-int Video::cursorOnObject(int argFrameNum) {
+int Video::cursorOnObject(int argFrameNum, Vec2 argCursorPos) {
 	int clickedLayerNumber = -1;
-	Vec2 cursorPosOnRenderTexture = cursorPosOnPreviewer();
+	Vec2 cursorPosOnRenderTexture = argCursorPos;
 	
 	for (int i=0; i<layers.size(); i++) {
 		if (layers[i]->getObject(argFrameNum) == nullptr) {
@@ -78,16 +76,32 @@ Vec2 Video::cursorPosOnPreviewer() {
 	return cursorPosOnRenderTexture;
 }
 
-Size Video::preview(int argFrameNum) {
+Size Video::preview(int argFrameNum, Size argWindowSize) {
+	windowSize = argWindowSize;
+	
 	if (argFrameNum != previewingFrameNum) {
 		needToUpdatePreview = true;
 		previewingFrameNum = argFrameNum;
 	}
 	
-	int coo = cursorOnObject(argFrameNum);
-	if (coo != layerUnderCursor) {
+	Vec2 cursorPosOnRenderTexture = cursorPosOnPreviewer();
+	if (cursorPosOnRenderTexture.x >= 0 && cursorPosOnRenderTexture.y >= 0 &&
+		cursorPosOnRenderTexture.x <= videoSize.x && cursorPosOnRenderTexture.y <= videoSize.y) {
+		
+		int coo = cursorOnObject(argFrameNum, cursorPosOnRenderTexture);
+		if (coo != layerUnderCursor) {
+			needToUpdatePreview = true;
+			layerUnderCursor = coo;
+		}
+		
+		if (MouseL.down() && selectedObject != layerUnderCursor) {
+			needToUpdatePreview = true;
+			selectedObject = layerUnderCursor;
+		}
+	}
+	else if (layerUnderCursor >= 0) {
 		needToUpdatePreview = true;
-		layerUnderCursor = coo;
+		layerUnderCursor = -1;
 	}
 	
 	// プレビューの更新
@@ -105,7 +119,11 @@ Size Video::preview(int argFrameNum) {
 			
 			tempObject->getTexture()->draw(tempObject->getPos(argFrameNum).x, tempObject->getPos(argFrameNum).y);
 			
-			if (layerUnderCursor == i) {
+			if (selectedObject == i) {
+				Rect(tempObject->getPos(argFrameNum).x, tempObject->getPos(argFrameNum).y,
+				tempObject->getSize(argFrameNum).x, tempObject->getSize(argFrameNum).y).drawFrame(2, 2, Color(230, 126, 34));
+			}
+			else if (layerUnderCursor == i) {
 				Rect(tempObject->getPos(argFrameNum).x-2, tempObject->getPos(argFrameNum).y-2,
 					 tempObject->getSize(argFrameNum).x+4, tempObject->getSize(argFrameNum).y+4).draw(Color(0, 162, 232, 128));
 			}

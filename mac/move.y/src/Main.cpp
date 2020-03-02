@@ -12,7 +12,7 @@ void Main() {
     Scene::SetBackground(Color(75, 75, 75));
 	
 	Size videoSize = Size(1920, 1080);
-	Video video(videoSize, Scene::Size());
+	Video video(videoSize);
 	
 	Rect rectBack(0, 0, videoSize.x, videoSize.y);
 	Object back1;
@@ -91,7 +91,7 @@ void Main() {
 	Font font16(16);
 
     while (System::Update()) {
-		video.preview(previewFrame);
+		video.preview(previewFrame, Scene::Size());
 		
 		if (writing) {
 			cout << "書き出し中..." << endl;
