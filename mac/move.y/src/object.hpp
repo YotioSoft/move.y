@@ -40,6 +40,9 @@ public:
 	// オブジェクトの種類を返す
 	object_type::Type getObjectType();
 	
+	// オブジェクトの名前を返す
+	String getName();
+	
 private:
 	// 動画全体のサイズ
 	Size videoSize;
@@ -67,7 +70,7 @@ private:
 	object_type::Type objectType;
 	
 	// オブジェクトの各種類のポインタ
-	StringObject* string;	// 文字列
+	StringObject* str;		// 文字列
 	Rect* rect;				// 四角形
 	Circle* circle;			// 円形
 	

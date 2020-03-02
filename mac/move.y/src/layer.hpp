@@ -13,9 +13,10 @@
 
 class Layer {
 public:
-	bool addObject(Object& argObject);
+	bool addObject(Object* argObject);
 	
 	Object* getObject(int argFrameNum);
+	Array<Object*> getObjects();
 	
 	int maxFrameNum();
 	

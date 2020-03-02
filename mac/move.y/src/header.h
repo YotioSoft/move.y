@@ -38,7 +38,7 @@ typedef struct VideoTime {
 
 typedef struct StringObject {
 	Font* font;
-	String string;
+	String str;
 } StringObject;
 
 namespace object_type {

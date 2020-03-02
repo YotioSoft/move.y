@@ -7,8 +7,8 @@
 
 #include "layer.hpp"
 
-bool Layer::addObject(Object& argObject) {
-	objects.push_back(&argObject);
+bool Layer::addObject(Object* argObject) {
+	objects.push_back(argObject);
 	
 	return true;
 }
@@ -20,6 +20,10 @@ Object* Layer::getObject(int argFrameNum) {
 		}
 	}
 	return nullptr;
+}
+
+Array<Object*> Layer::getObjects() {
+	return objects;
 }
 
 int Layer::maxFrameNum() {

@@ -8,25 +8,28 @@
 #include "object.hpp"
 
 void Object::setFont(Font& argFont, Color argColor, String argString, Position argObjectPos, int argStartFrameNum, int argEndFrameNum) {
-	StringObject newString;
-	newString.font = &argFont;
-	newString.string = argString;
+	
 	objectColor = argColor;
-	string = &newString;
+	
+	str = new StringObject;
+	str->font = &argFont;
+	str->str = argString;
+	
+	cout << "set: " << str << " to " << this << endl;
 	
 	objectPos = argObjectPos;
 	objectBeginFrameNum = argStartFrameNum;
 	objectEndFrameNum = argEndFrameNum;
 	
-	RectF fontDrawSize = (*newString.font)(newString.string).region(objectPos.x, objectPos.y);
+	RectF fontDrawSize = (*(str->font))(str->str).region(objectPos.x, objectPos.y);
 	objectSize.x = fontDrawSize.w;
 	objectSize.y = fontDrawSize.h;
 	
 	objectImage = Image(fontDrawSize.w, fontDrawSize.h, Color(0, 0));
-	(*newString.font)(newString.string).overwrite(objectImage, 0, 0, objectColor);
+	(*(str->font))(str->str).overwrite(objectImage, 0, 0, objectColor);
 	MultiPolygon mp = objectImage.alphaToPolygons().simplified(1).movedBy(-400, -500).scaled(0.025);
 	
-	objectTexture  = DynamicTexture(objectImage);
+	objectTexture = DynamicTexture(objectImage);
 	
 	objectType = object_type::string;
 }
@@ -107,4 +110,21 @@ DynamicTexture* Object::getTexture() {
 
 object_type::Type Object::getObjectType() {
 	return objectType;
+}
+
+String Object::getName() {
+	switch (objectType) {
+		case object_type::string:
+			cout << "get: " << str << " from " << this << endl;
+			return U"Text: "+str->str;
+			
+		case object_type::rect:
+			return U"Square";
+			
+		case object_type::circle:
+			return U"Circle";
+			
+		default:
+			return U"Object";
+	}
 }

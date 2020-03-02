@@ -27,7 +27,7 @@ Array<Layer*> Video::getLayers() {
 	return layers;
 }
 
-bool Video::addObjectToLayer(int argLayerNum, Object& argObject) {
+bool Video::addObjectToLayer(int argLayerNum, Object* argObject) {
 	if (argLayerNum > layers.size()) {
 		return false;
 	}

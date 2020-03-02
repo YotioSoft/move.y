@@ -26,11 +26,11 @@ void Main() {
 	Object back5;
 	back5.setRect(rectBack, Color(Palette::Snow), 171, 200);
 	video.addLayer();
-	video.addObjectToLayer(0, back1);
-	video.addObjectToLayer(0, back2);
-	video.addObjectToLayer(0, back3);
-	video.addObjectToLayer(0, back4);
-	video.addObjectToLayer(0, back5);
+	video.addObjectToLayer(0, &back1);
+	video.addObjectToLayer(0, &back2);
+	video.addObjectToLayer(0, &back3);
+	video.addObjectToLayer(0, &back4);
+	video.addObjectToLayer(0, &back5);
 
     Font font(36);
 	Object mobj;
@@ -44,11 +44,11 @@ void Main() {
 	mobj2.setFont(font, Color(0, 0, 0), U"OpenSiv3D + OpenCV4で動画書き出ししてみるテスト中", {10, 510}, 171, 200);
 	mobj2.setMoveY(U"5*t");
 	video.addLayer();
-	video.addObjectToLayer(1, mobj);
+	video.addObjectToLayer(1, &mobj);
 	video.addLayer();
 	video.addLayer();
-	video.addObjectToLayer(3, mobj1);
-	video.addObjectToLayer(3, mobj2);
+	video.addObjectToLayer(3, &mobj1);
+	video.addObjectToLayer(3, &mobj2);
 	
 	Rect rect1(100, 100, 100, 100);
 	Object robj1;
@@ -56,7 +56,7 @@ void Main() {
 	robj1.setMoveX(U"0-t");
 	robj1.setMoveY(U"0-t");
 	video.addLayer();
-	video.addObjectToLayer(2, robj1);
+	video.addObjectToLayer(2, &robj1);
 	
 	Rect rect2(150, 150, 100, 100);
 	Object robj2;
@@ -64,7 +64,7 @@ void Main() {
 	robj2.setMoveX(U"t");
 	robj2.setMoveY(U"t");
 	video.addLayer();
-	video.addObjectToLayer(4, robj2);
+	video.addObjectToLayer(4, &robj2);
 	
 	Font font24(24);
 	Object aboutobj;
@@ -72,8 +72,8 @@ void Main() {
 	Object aboutobj1;
 	aboutobj1.setFont(font24, Color(0, 0, 0), U"About\nFile Name : output.mp4\nSize : 1920x1080\nTotal Frames : 200\nFPS : 30\nFormat : H264", {1400, 700}, 171, 200);
 	video.addLayer();
-	video.addObjectToLayer(5, aboutobj);
-	video.addObjectToLayer(5, aboutobj1);
+	video.addObjectToLayer(5, &aboutobj);
+	video.addObjectToLayer(5, &aboutobj1);
 	
 	/*
 	for (i=0; i<1; i++) {
@@ -106,8 +106,8 @@ void Main() {
 			font16(U"書き出し中").draw(Scene::Size().x-150, Scene::Size().y-50, Color(Palette::Black));
         }
 		
-		SimpleGUI::Slider(U"Frame {:d}"_fmt(previewFrame = (int)(previewFrameTmp*video.getTotalFrames())), previewFrameTmp, Vec2(10, Scene::Size().y-Scene::Size().y/5-50), 200, 200);
+		SimpleGUI::Slider(U"Frame {:d}"_fmt(previewFrame = (int)(previewFrameTmp*video.getTotalFrames())), previewFrameTmp, Vec2(10, Scene::Size().y-Scene::Size().y/5-40), 200, 200);
 		
-		timeline.draw(Scene::Size());
+		timeline.draw(Scene::Size(), {previewFrame, previewFrame+100}, font16);
 	}
 }

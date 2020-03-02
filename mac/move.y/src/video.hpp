@@ -25,7 +25,7 @@ public:
 	Array<Layer*> getLayers();
 	
 	// オブジェクトをレイヤー追加する
-	bool addObjectToLayer(int argLayerNum, Object& argObject);
+	bool addObjectToLayer(int argLayerNum, Object* argObject);
 	
 	// カーソルがオブジェクトの上にあることを検知
 	int cursorOnObject(int argFrameNum, Vec2 argCursorPos);
