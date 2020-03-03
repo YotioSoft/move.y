@@ -87,9 +87,10 @@ void Main() {
 	bool writing = false;
 	
 	TimeLine timeline(&video);
+	video.linkToTimeline(&timeline);
 	
 	Font font16(16);
-
+	
     while (System::Update()) {
 		video.preview(previewFrame, Scene::Size());
 		

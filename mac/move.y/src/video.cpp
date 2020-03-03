@@ -6,6 +6,7 @@
 //
 
 #include "video.hpp"
+#include "timeline.hpp"
 
 Video::Video(Size argVideoSize) {
 	videoSize = argVideoSize;
@@ -76,6 +77,15 @@ Vec2 Video::cursorPosOnPreviewer() {
 	return cursorPosOnRenderTexture;
 }
 
+void Video::selectObject(Object* argObjectP) {
+	selectedObject = argObjectP;
+	needToUpdatePreview = true;
+}
+
+void Video::linkToTimeline(TimeLine* argTimeLine) {
+	timeline = argTimeLine;
+}
+
 Size Video::preview(int argFrameNum, Size argWindowSize) {
 	windowSize = argWindowSize;
 	
@@ -88,20 +98,43 @@ Size Video::preview(int argFrameNum, Size argWindowSize) {
 	if (cursorPosOnRenderTexture.x >= 0 && cursorPosOnRenderTexture.y >= 0 &&
 		cursorPosOnRenderTexture.x <= videoSize.x && cursorPosOnRenderTexture.y <= videoSize.y) {
 		
+		Object* obj;
 		int coo = cursorOnObject(argFrameNum, cursorPosOnRenderTexture);
-		if (coo != layerUnderCursor) {
-			needToUpdatePreview = true;
-			layerUnderCursor = coo;
+		if (coo >= 0 && coo < layers.size()) {
+			obj = layers[cursorOnObject(argFrameNum, cursorPosOnRenderTexture)]->getObject(previewingFrameNum);
+			if (obj != objectUnderCursor) {
+				needToUpdatePreview = true;
+				objectUnderCursor = obj;
+			}
+			
+			if (MouseL.down()) {
+				if (selectedObject != objectUnderCursor) {
+					needToUpdatePreview = true;
+					selectedObject = objectUnderCursor;
+					
+					if (timeline != nullptr) {
+						timeline->selectObject(selectedObject);
+					}
+				}
+			}
 		}
-		
-		if (MouseL.down() && selectedObject != layerUnderCursor) {
+		else {
 			needToUpdatePreview = true;
-			selectedObject = layerUnderCursor;
+			objectUnderCursor = nullptr;
+			
+			if (MouseL.down()) {
+				needToUpdatePreview = true;
+				selectedObject = nullptr;
+				
+				if (timeline != nullptr) {
+					timeline->selectObject(selectedObject);
+				}
+			}
 		}
 	}
-	else if (layerUnderCursor >= 0) {
+	else {
 		needToUpdatePreview = true;
-		layerUnderCursor = -1;
+		objectUnderCursor = nullptr;
 	}
 	
 	// プレビューの更新
@@ -119,11 +152,11 @@ Size Video::preview(int argFrameNum, Size argWindowSize) {
 			
 			tempObject->getTexture()->draw(tempObject->getPos(argFrameNum).x, tempObject->getPos(argFrameNum).y);
 			
-			if (selectedObject == i) {
+			if (selectedObject == tempObject) {
 				Rect(tempObject->getPos(argFrameNum).x, tempObject->getPos(argFrameNum).y,
 				tempObject->getSize(argFrameNum).x, tempObject->getSize(argFrameNum).y).drawFrame(2, 2, Color(230, 126, 34));
 			}
-			else if (layerUnderCursor == i) {
+			else if (objectUnderCursor == tempObject) {
 				Rect(tempObject->getPos(argFrameNum).x-2, tempObject->getPos(argFrameNum).y-2,
 					 tempObject->getSize(argFrameNum).x+4, tempObject->getSize(argFrameNum).y+4).draw(Color(0, 162, 232, 128));
 			}

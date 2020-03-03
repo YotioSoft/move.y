@@ -6,6 +6,7 @@
 //
 
 #include "timeline.hpp"
+#include "video.hpp"
 
 TimeLine::TimeLine(Video* argVideo) {
 	needToUpdate = true;
@@ -19,6 +20,11 @@ Vec2 TimeLine::cursorPosOnTimeline(Size argWindowSize) {
 	};
 	
 	return cursorPosOnRenderTexture;
+}
+
+void TimeLine::selectObject(Object* argObjectP) {
+	selectedObject = argObjectP;
+	needToUpdate = true;
 }
 
 void TimeLine::draw(Size argWindowSize, pair<int, int> argRangeOfFrames, Font& argFont) {
@@ -55,6 +61,8 @@ void TimeLine::draw(Size argWindowSize, pair<int, int> argRangeOfFrames, Font& a
 				selectedFrame = (double)(Cursor::Pos().x-timelinePos.x)/(double)timelineSize.x*length;
 			}
 		}
+		
+		video->selectObject(selectedObject);		// プレビューにも反映
 	}
 	
 	// タイムラインの表示
@@ -83,12 +91,23 @@ void TimeLine::draw(Size argWindowSize, pair<int, int> argRangeOfFrames, Font& a
 					int secondX = (int)((double)(objectFrames.second+1-rangeOfFrames.first)/(double)length*(argWindowSize.x-10*2));
 					
 					objectRects.push_back(pair<Object*, Rect>{layerObjects[obj], Rect(firstX, i*30+2, secondX-firstX, 26)});
+					Color rectColor;
+					switch (layerObjects[obj]->getObjectType()) {
+						case object_type::string:
+							rectColor = Color(149, 165, 166);
+							break;
+						case object_type::rect:
+						case object_type::circle:
+							rectColor = Color(108, 122, 137);
+							break;
+					}
+					
 					if (layerObjects[obj] == selectedObject) {
 						// 選択されたオブジェクトをハイライト
-						objectRects.back().second.draw(Color(Palette::Gray)).drawFrame(2, 2, Color(230, 126, 34));
+						objectRects.back().second.draw(rectColor).drawFrame(2, 2, Color(230, 126, 34));
 					}
 					else {
-						objectRects.back().second.draw(Color(Palette::Gray)).drawFrame(1, 1, Color(Palette::Black));
+						objectRects.back().second.draw(rectColor).drawFrame(1, 1, Color(Palette::Black));
 					}
 					
 					argFont(layerObjects[obj]->getName()).draw(firstX+10, i*30+2, Color(Palette::White));

@@ -12,6 +12,9 @@
 #include "layer.hpp"
 #include "object.hpp"
 #include "converter.hpp"
+#include "timeline.hpp"
+
+class TimeLine;
 
 class Video {
 public:
@@ -32,6 +35,12 @@ public:
 	
 	// マウス座標をプレビュー上の座標に変換
 	Vec2 cursorPosOnPreviewer();
+	
+	// オブジェクトを選択させる
+	void selectObject(Object* argObjectP);
+	
+	// タイムラインへのリンク
+	void linkToTimeline(TimeLine* argTimeLine);
 	
 	// プレビュー部分の表示
 	Size preview(int argFrameNum, Size argWindowSize);
@@ -71,6 +80,9 @@ private:
 	// 書き出し用
 	MSRenderTexture encordingTexture;
 	
+	// タイムラインのポインタ
+	TimeLine* timeline;
+	
 	// プレビュー部分の表示フレーム
 	int previewingFrameNum;
 	
@@ -83,11 +95,11 @@ private:
 	// 書き出し済みのフレーム数
 	int wroteFrames;
 	
-	// カーソルの下にあるオブジェクトのレイヤ番号
-	int layerUnderCursor = -1;
+	// カーソルの下にあるオブジェクト
+	Object* objectUnderCursor;
 	
-	// 選択中のオブヘクトのレイヤ番号
-	int selectedObject = -1;
+	// 選択中のオブジェクト
+	Object* selectedObject;
 };
 
 #endif /* video_hpp */

@@ -12,12 +12,17 @@
 #include "video.hpp"
 #include "layer.hpp"
 
+class Video;
+
 class TimeLine {
 public:
 	TimeLine(Video* argVideo);
 	
 	// マウス座標をタイムライン上の座標に変換
 	Vec2 cursorPosOnTimeline(Size argWindowSize);
+	
+	// オブジェクトを選択させる
+	void selectObject(Object* argObjectP);
 	
 	void draw(Size argWindowSize, pair<int, int> argRangeOfFrames, Font& argFont);
 	
