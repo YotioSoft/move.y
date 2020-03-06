@@ -17,6 +17,8 @@ Video::Video(Size argVideoSize) {
 	
 	totalFrames = 0;
 	wroteFrames = 0;
+	
+	fps = 30.0;
 }
 
 int Video::addLayer() {
@@ -39,6 +41,8 @@ bool Video::addObjectToLayer(int argLayerNum, Object* argObject) {
 	if (layers[argLayerNum]->maxFrameNum() > totalFrames) {
 		totalFrames = layers[argLayerNum]->maxFrameNum();
 	}
+	
+	updateSet(argObject->getFrameTime().first, argObject->getFrameTime().second);
 	
 	return ret;
 }
@@ -88,6 +92,8 @@ void Video::linkToTimeline(TimeLine* argTimeLine) {
 
 Size Video::preview(int argFrameNum, Size argWindowSize) {
 	windowSize = argWindowSize;
+	
+	updateFrames();
 	
 	if (argFrameNum != previewingFrameNum) {
 		needToUpdatePreview = true;
@@ -184,41 +190,79 @@ int Video::getTotalFrames() {
 	return totalFrames;
 }
 
-void Video::encode(String argVideoFilePath) {
-	videoFilePath = argVideoFilePath;
-	videoWriter = cv::VideoWriter(videoFilePath.toUTF8(), cv::VideoWriter::fourcc('H','2','6','4'), 30.0, cv::Size(videoSize.x, videoSize.y));
+double Video::getFPS() {
+	return fps;
+}
+
+void Video::updateSet(int argStartFrame, int argEndFrame) {
+	if (argStartFrame < writeToMatStartFrame || argEndFrame > writeToMatEndFrame) {
+		writeToMatStartFrame = argStartFrame;
+		writeToMatEndFrame = argEndFrame;
+	}
+	if (argStartFrame != writeToMatStartFrame || argEndFrame != writeToMatEndFrame) {
+		wroteToMatFrames = writeToMatStartFrame;
+	}
+}
+
+void Video::updateFrames() {
+	if (wroteToMatFrames > writeToMatEndFrame) {
+		return;
+	}
 	
+	updateMat(wroteToMatFrames);
+	wroteToMatFrames ++;
+}
+
+void Video::updateMat(int argFrameNum) {
 	// frameMatに各オブジェクトを書き足す
 	cv::Mat frameMat(videoSize.y, videoSize.x, CV_8UC3);
 	Image frameImage(videoSize.x, videoSize.y);
 	Object* tempObject;
 	
 	ScopedRenderTarget2D target(encordingTexture);
-	
-	for (int f=0; f<totalFrames; f++) {
+	//for (int f=argStartFrame; f<argEndFrame; f++) {
 		encordingTexture.clear(Color(0, 0));
+		matArray.push_back(new cv::Mat(videoSize.y, videoSize.x, CV_8UC3));
 		
 		for (int l=0; l<layers.size(); l++) {
 			// 各レイヤーの描画
-			tempObject = layers[l]->getObject(f);
+			tempObject = layers[l]->getObject(argFrameNum);
 				
 			if (tempObject == nullptr) {
 				continue;
 			}
 				
-			tempObject->getTexture()->draw(tempObject->getPos(f).x, tempObject->getPos(f).y);
+			tempObject->getTexture()->draw(tempObject->getPos(argFrameNum).x, tempObject->getPos(argFrameNum).y);
+			//addObjectToMat((*matArray[f]), *tempObject, f);
 		}
 		
 		Graphics2D::Flush();
 		encordingTexture.resolve();
 		encordingTexture.readAsImage(frameImage);
 		
-		imageToMat(frameMat, frameImage);
+		matArray.push_back(new cv::Mat(videoSize.y, videoSize.x, CV_8UC3));
+		imageToMat((*matArray[argFrameNum]), frameImage);
 		
-		videoWriter << frameMat;
-	}
+		cout << "書き込み中: " << argFrameNum << "/" << totalFrames << " -> " << matArray[argFrameNum] << endl;
+	//}
+	cout << "Done!" << endl;
+}
+
+void Video::encode(String argVideoFilePath) {
+	videoFilePath = argVideoFilePath;
+	videoWriter = cv::VideoWriter(videoFilePath.toUTF8(), cv::VideoWriter::fourcc('H','2','6','4'), fps, cv::Size(videoSize.x, videoSize.y));
 	
+	
+	//updateMat(0, 200);
+	
+	// frameMatに各オブジェクトを書き足す
+	for (int f=0; f<=totalFrames; f++) {
+		videoWriter << *(matArray[f]);
+		cout << "出力中: " << f << "/" << totalFrames << endl;
+	}
 	videoWriter.release();
+	
+	//videoWriter.release();
 	
 	/*
 	// プレビューの更新
@@ -307,5 +351,9 @@ void Video::encode(String argVideoFilePath) {
 void Video::close() {
 	for (int i=0; i<layers.size(); i++) {
 		free(layers[i]);
+	}
+	
+	for (int i=0; i<matArray.size(); i++) {
+		free(matArray[i]);
 	}
 }

@@ -72,8 +72,20 @@ void TimeLine::draw(Size argWindowSize, pair<int, int> argRangeOfFrames, Font& a
 		
 		objectRects.clear();
 		
-		for (int lineY = 0; lineY < argWindowSize.y/5-10; lineY += 30) {
+		for (int lineY = 30; lineY < argWindowSize.y/5-10; lineY += 30) {
 			Line(0, lineY, argWindowSize.x-10*2, lineY).draw(Color(Palette::White));
+		}
+		
+		// 秒数
+		for (int f=rangeOfFrames.first/10*10; f<rangeOfFrames.second; f += 10) {
+			int frameX = (int)((double)(f-rangeOfFrames.first)/(double)length*(argWindowSize.x-10*2));
+			
+			int hours = (int)(f/video->getFPS()/3600);
+			int minutes = (int)(f/video->getFPS()/60-hours*60);
+			int seconds = (int)(f/video->getFPS()-minutes*60-hours*360);
+			int milliseconds = (int)((f/video->getFPS()-seconds-minutes*60-hours*360)*1000);
+			
+			argFont(U"{:0>2}:{:0>2}:{:0>2}:{:0>3}"_fmt(hours, minutes, seconds, milliseconds)).draw(frameX, 0, Color(Palette::White));
 		}
 		
 		for (int i=0; i<layers.size(); i++) {
@@ -90,7 +102,7 @@ void TimeLine::draw(Size argWindowSize, pair<int, int> argRangeOfFrames, Font& a
 					int firstX = (int)((double)(objectFrames.first-rangeOfFrames.first)/(double)length*(argWindowSize.x-10*2));
 					int secondX = (int)((double)(objectFrames.second+1-rangeOfFrames.first)/(double)length*(argWindowSize.x-10*2));
 					
-					objectRects.push_back(pair<Object*, Rect>{layerObjects[obj], Rect(firstX, i*30+2, secondX-firstX, 26)});
+					objectRects.push_back(pair<Object*, Rect>{layerObjects[obj], Rect(firstX, (i+1)*30+2, secondX-firstX, 26)});
 					Color rectColor;
 					switch (layerObjects[obj]->getObjectType()) {
 						case object_type::string:
@@ -110,7 +122,7 @@ void TimeLine::draw(Size argWindowSize, pair<int, int> argRangeOfFrames, Font& a
 						objectRects.back().second.draw(rectColor).drawFrame(1, 1, Color(Palette::Black));
 					}
 					
-					argFont(layerObjects[obj]->getName()).draw(firstX+10, i*30+2, Color(Palette::White));
+					argFont(layerObjects[obj]->getName()).draw(firstX+10, (i+1)*30+2, Color(Palette::White));
 				}
 			}
 		}

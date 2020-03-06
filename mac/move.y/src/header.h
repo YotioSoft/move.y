@@ -9,6 +9,7 @@
 #define header_h
 
 #define SIV3D_WINDOWS_HIGH_DPI
+#define SIV3D_CONCURRENT
 
 #include <Siv3D.hpp>
 #include <opencv2/opencv.hpp>

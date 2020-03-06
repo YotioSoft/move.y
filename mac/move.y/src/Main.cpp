@@ -91,6 +91,8 @@ void Main() {
 	
 	Font font16(16);
 	
+	//video.update();
+	
     while (System::Update()) {
 		video.preview(previewFrame, Scene::Size());
 		
@@ -107,7 +109,7 @@ void Main() {
 			font16(U"書き出し中").draw(Scene::Size().x-150, Scene::Size().y-50, Color(Palette::Black));
         }
 		
-		SimpleGUI::Slider(U"Frame {:d}"_fmt(previewFrame = (int)(previewFrameTmp*video.getTotalFrames())), previewFrameTmp, Vec2(10, Scene::Size().y-Scene::Size().y/5-40), 200, 200);
+		SimpleGUI::Slider(U"Frame {:d}"_fmt(previewFrame = (int)(previewFrameTmp*video.getTotalFrames())), previewFrameTmp, Vec2(Scene::Size().x-400, Scene::Size().y-Scene::Size().y/5-40), 200, 200);
 		
 		timeline.draw(Scene::Size(), {previewFrame, previewFrame+100}, font16);
 	}

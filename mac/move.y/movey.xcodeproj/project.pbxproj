@@ -39,6 +39,7 @@
 		2CEACB67233A61C900C6EE98 /* libgif.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CEACB65233A61C900C6EE98 /* libgif.a */; };
 		2CEACB68233A61C900C6EE98 /* libutil.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CEACB66233A61C900C6EE98 /* libutil.a */; };
 		4B810444240BE4EF0019E2FE /* timeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B810442240BE4EF0019E2FE /* timeline.cpp */; };
+		4B810447240EB3900019E2FE /* property.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B810445240EB3900019E2FE /* property.cpp */; };
 		4B99693E240AEF50009699E6 /* converter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B99693C240AEF50009699E6 /* converter.cpp */; };
 		4BC0CD2723FEF26A00B63842 /* video.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4BC0CD2523FEF26A00B63842 /* video.cpp */; };
 		4BC0CD2A23FEF31700B63842 /* layer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4BC0CD2823FEF31700B63842 /* layer.cpp */; };
@@ -131,6 +132,8 @@
 		2CEACB66233A61C900C6EE98 /* libutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libutil.a; path = ../../lib/macOS/libgif/libutil.a; sourceTree = "<group>"; };
 		4B810442240BE4EF0019E2FE /* timeline.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = timeline.cpp; sourceTree = "<group>"; };
 		4B810443240BE4EF0019E2FE /* timeline.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = timeline.hpp; sourceTree = "<group>"; };
+		4B810445240EB3900019E2FE /* property.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = property.cpp; sourceTree = "<group>"; };
+		4B810446240EB3900019E2FE /* property.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = property.hpp; sourceTree = "<group>"; };
 		4B99693C240AEF50009699E6 /* converter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = converter.cpp; sourceTree = "<group>"; };
 		4B99693D240AEF50009699E6 /* converter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = converter.hpp; sourceTree = "<group>"; };
 		4BC0CD2423FED0A800B63842 /* header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = header.h; sourceTree = "<group>"; };
@@ -353,6 +356,8 @@
 				4B99693D240AEF50009699E6 /* converter.hpp */,
 				4BC0CD2B23FEF3C800B63842 /* object.cpp */,
 				4BC0CD2C23FEF3C800B63842 /* object.hpp */,
+				4B810445240EB3900019E2FE /* property.cpp */,
+				4B810446240EB3900019E2FE /* property.hpp */,
 				4B810442240BE4EF0019E2FE /* timeline.cpp */,
 				4B810443240BE4EF0019E2FE /* timeline.hpp */,
 				4BC0CD2823FEF31700B63842 /* layer.cpp */,
@@ -562,6 +567,7 @@
 			files = (
 				4BC0CD3323FFDFC400B63842 /* rpn.cpp in Sources */,
 				2C17789A1CE0AA7C00BB8AD0 /* Main.cpp in Sources */,
+				4B810447240EB3900019E2FE /* property.cpp in Sources */,
 				4B99693E240AEF50009699E6 /* converter.cpp in Sources */,
 				4BC0CD2723FEF26A00B63842 /* video.cpp in Sources */,
 				4B810444240BE4EF0019E2FE /* timeline.cpp in Sources */,

@@ -42,11 +42,21 @@ public:
 	// タイムラインへのリンク
 	void linkToTimeline(TimeLine* argTimeLine);
 	
+	void update();
+	
 	// プレビュー部分の表示
 	Size preview(int argFrameNum, Size argWindowSize);
 	
 	// フレームの総数を返す
 	int getTotalFrames();
+	
+	// FPS値を返す
+	double getFPS();
+	
+	// Matを更新
+	void updateSet(int argStartFrame, int argEndFrame);
+	void updateFrames();
+	void updateMat(int argFrameNum);
 	
 	// ビデオ出力
 	void encode(String argVideoFilePath);
@@ -64,6 +74,9 @@ private:
 	// VideoWriter
 	//VideoWriter videoWriter;
 	cv::VideoWriter videoWriter;
+	
+	// Mat
+	Array<cv::Mat*> matArray;
 	
 	// 各レイヤーのポインタ
 	Array<Layer*> layers;
@@ -94,6 +107,14 @@ private:
 	
 	// 書き出し済みのフレーム数
 	int wroteFrames;
+	
+	// Matに書き出し済みのフレーム数
+	int wroteToMatFrames;
+	int writeToMatStartFrame;
+	int writeToMatEndFrame;
+	
+	// FPS値
+	double fps;
 	
 	// カーソルの下にあるオブジェクト
 	Object* objectUnderCursor;

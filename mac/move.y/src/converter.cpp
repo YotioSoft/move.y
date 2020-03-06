@@ -12,7 +12,9 @@ void imageToMat(cv::Mat& argMat, Image& argImage) {
 		cv::Vec3b* linePixelsPtr = argMat.ptr<cv::Vec3b>(y);
 		
 		for (int x=0; x<argImage.size().x; x++) {
-			linePixelsPtr[x] = cv::Vec3b(argImage[y][x].b, argImage[y][x].g, argImage[y][x].r);
+			linePixelsPtr[x][0] = argImage[y][x].b;
+			linePixelsPtr[x][1] = argImage[y][x].g;
+			linePixelsPtr[x][2] = argImage[y][x].r;
 		}
 	}
 }
