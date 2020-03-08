@@ -93,7 +93,7 @@ void Video::linkToTimeline(TimeLine* argTimeLine) {
 Size Video::preview(int argFrameNum, Size argWindowSize) {
 	windowSize = argWindowSize;
 	
-	updateFrames();
+	//updateFrames();
 	
 	if (argFrameNum != previewingFrameNum) {
 		needToUpdatePreview = true;
@@ -255,11 +255,62 @@ void Video::encode(String argVideoFilePath) {
 	
 	//updateMat(0, 200);
 	
-	// frameMatに各オブジェクトを書き足す
+	// Imageに各オブジェクトを書き足す
+	Array<Image*> imageArray(1000, nullptr);
+	
+	ScopedRenderTarget2D target(encordingTexture);
+	int imageNum = 0;
+	
+	Object* tempObject;
+	for (int f=0; f<totalFrames; f++) {
+		encordingTexture.clear(Color(0, 0));
+		for (int l=0; l<layers.size(); l++) {
+			// 各レイヤーの描画
+			tempObject = layers[l]->getObject(f);
+				
+			if (tempObject == nullptr) {
+				continue;
+			}
+				
+			tempObject->getTexture()->draw(tempObject->getPos(f).x, tempObject->getPos(f).y);
+		}
+		
+		Graphics2D::Flush();
+		encordingTexture.resolve();
+		imageArray[imageNum] = new Image(videoSize.x, videoSize.y);
+		encordingTexture.readAsImage(*imageArray[imageNum]);
+		
+		imageNum ++;
+		if (imageNum == 1000 || f+1 == totalFrames) {
+			Array<cv::Mat*> frameMat(imageNum);
+			
+			for (int i=0; i<imageNum; i++) {
+				frameMat[i] = new cv::Mat(videoSize.y, videoSize.x, CV_8UC3);
+			}
+			
+			Range(0, imageNum-1).parallel_each([this, imageArray, frameMat](int32 i)
+			{
+				cout << "書き込み開始: " << i << endl;
+				imageToMat(*frameMat[i], *imageArray[i]);
+				cout << "  書き込み完了: " << i << endl;
+			});
+			
+			for (int i=0; i<imageNum; i++) {
+				videoWriter << *frameMat[i];
+				
+				delete(frameMat[i]);
+				delete(imageArray[i]);
+			}
+			imageNum = 0;
+		}
+	}
+	
+	/*
 	for (int f=0; f<=totalFrames; f++) {
 		videoWriter << *(matArray[f]);
 		cout << "出力中: " << f << "/" << totalFrames << endl;
 	}
+	 */
 	videoWriter.release();
 	
 	//videoWriter.release();
